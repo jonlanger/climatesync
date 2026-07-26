@@ -11,7 +11,11 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { CITIES } from "@/data/cities";
 import {
   CITY_SORT_OPTIONS,
@@ -82,16 +86,17 @@ function CitiesList({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="space-y-3 border-b border-[color:var(--panel-border)] px-4 py-3">
-        <div className="flex items-center gap-2 rounded-xl border border-[color:var(--panel-border)] bg-[color:var(--panel-hover)] px-3 py-2">
-          <Search className="size-3.5 shrink-0 text-[color:var(--panel-muted)]" aria-hidden />
-          <Input
+        <InputGroup className="h-8">
+          <InputGroupInput
             value={cityFilter}
             onChange={(event) => onCityFilterChange(event.target.value)}
             placeholder="Filter cities…"
-            className="h-7 border-0 bg-transparent px-0 text-sm text-[color:var(--panel-fg)] shadow-none placeholder:text-[color:var(--panel-muted)] focus-visible:ring-0"
             aria-label="Filter cities"
           />
-        </div>
+          <InputGroupAddon align="inline-start">
+            <Search aria-hidden />
+          </InputGroupAddon>
+        </InputGroup>
 
         <Combobox
           items={[...CITY_SORT_OPTIONS]}
@@ -107,17 +112,13 @@ function CitiesList({
           <ComboboxInput
             placeholder="Sort cities…"
             aria-label="Sort cities"
-            className="w-full border-[color:var(--panel-border)] bg-[color:var(--panel-hover)] text-[color:var(--panel-fg)]"
+            className="w-full"
           />
-          <ComboboxContent className="border border-[color:var(--panel-border)] bg-[color:var(--panel)] text-[color:var(--panel-fg)] shadow-lg ring-[color:var(--panel-border)]">
+          <ComboboxContent>
             <ComboboxEmpty>No sort option found.</ComboboxEmpty>
             <ComboboxList>
               {(option) => (
-                <ComboboxItem
-                  key={option.value}
-                  value={option}
-                  className="data-highlighted:bg-[color:var(--panel-hover)] data-highlighted:text-[color:var(--panel-fg)]"
-                >
+                <ComboboxItem key={option.value} value={option}>
                   {option.label}
                 </ComboboxItem>
               )}

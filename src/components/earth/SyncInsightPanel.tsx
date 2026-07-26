@@ -2,6 +2,7 @@
 
 import { ExternalLink, PanelRightClose, X } from "lucide-react";
 
+import { InsightVisual } from "@/components/insights/InsightVisual";
 import { Button } from "@/components/ui/button";
 import type { SyncInsight } from "@/data/sync-insights";
 import { cn } from "@/lib/utils";
@@ -74,25 +75,9 @@ export function SyncInsightPanel({
           ) : null}
         </div>
 
-        <figure className="border-b border-[color:var(--panel-border)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={insight.image.src}
-            alt={insight.image.alt}
-            className="h-44 w-full object-cover"
-          />
-          <figcaption className="px-5 py-2 text-[0.65rem] text-[color:var(--panel-muted)]">
-            Photo:{" "}
-            <a
-              href={insight.image.creditHref}
-              target="_blank"
-              rel="noreferrer"
-              className="underline-offset-2 hover:text-[color:var(--panel-fg)] hover:underline"
-            >
-              {insight.image.credit}
-            </a>
-          </figcaption>
-        </figure>
+        <div className="border-b border-[color:var(--panel-border)]">
+          <InsightVisual insight={insight} size="panel" />
+        </div>
 
         <div className="space-y-5 px-5 py-5">
           {insight.blurb.split("\n\n").map((paragraph) => (

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Newsreader, Source_Sans_3 } from "next/font/google";
+
+import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
 const display = Newsreader({
@@ -31,9 +33,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      className={`dark ${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="min-h-full font-sans">
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

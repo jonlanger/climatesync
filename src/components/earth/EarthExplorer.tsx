@@ -53,11 +53,11 @@ function gateSimilarity(
   };
 }
 
-export function EarthExplorer() {
+export function EarthExplorer({ initialQuery = "" }: { initialQuery?: string }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [panelMode, setPanelMode] = useState<PanelMode>("closed");
   const [leftTab, setLeftTab] = useState<LeftPanelTab>("explore");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [similarityEnabled, setSimilarityEnabled] = useState(true);
   const [cityFilter, setCityFilter] = useState("");
   const [citySort, setCitySort] = useState<CitySortKey>("population-desc");
@@ -180,7 +180,7 @@ export function EarthExplorer() {
   };
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden bg-[radial-gradient(ellipse_at_30%_20%,#163a48_0%,#0a1620_45%,#060b10_100%)]">
+    <div className="flex h-full min-h-0 w-full overflow-hidden bg-[radial-gradient(ellipse_at_30%_20%,#163a48_0%,#0a1620_45%,#060b10_100%)]">
       <LeftPanel
         tab={leftTab}
         onTabChange={setLeftTab}

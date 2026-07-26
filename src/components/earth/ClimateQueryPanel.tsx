@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { GitCompareArrows, Search, Sparkles, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Combobox,
   ComboboxContent,
@@ -12,7 +11,12 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   INSIGHT_SORT_OPTIONS,
   insightsByCategory,
@@ -57,31 +61,31 @@ export function ClimateQueryPanel({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="space-y-3 border-b border-[color:var(--panel-border)] px-4 py-4">
-        <div className="flex items-center gap-2 rounded-xl border border-[color:var(--panel-border)] bg-[color:var(--panel-hover)] px-3 py-2.5">
-          <Search className="size-4 shrink-0 text-[color:var(--panel-muted)]" aria-hidden />
-          <Input
+        <InputGroup className="h-9">
+          <InputGroupInput
             value={value}
             onChange={(event) => onValueChange(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Escape") clear();
             }}
             placeholder="Search floods, heat, volcano…"
-            className="h-9 border-0 bg-transparent px-0 text-sm text-[color:var(--panel-fg)] shadow-none placeholder:text-[color:var(--panel-muted)] focus-visible:ring-0"
             aria-label="Climate query"
           />
+          <InputGroupAddon align="inline-start">
+            <Search aria-hidden />
+          </InputGroupAddon>
           {value ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              onClick={clear}
-              className="text-[color:var(--panel-muted)] hover:bg-[color:var(--panel)] hover:text-[color:var(--panel-fg)]"
-              aria-label="Clear query"
-            >
-              <X />
-            </Button>
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                size="icon-xs"
+                aria-label="Clear query"
+                onClick={clear}
+              >
+                <X />
+              </InputGroupButton>
+            </InputGroupAddon>
           ) : null}
-        </div>
+        </InputGroup>
 
         <div className="flex items-center justify-between gap-2">
           <button
@@ -128,17 +132,13 @@ export function ClimateQueryPanel({
                 <ComboboxInput
                   placeholder="Sort insights…"
                   aria-label="Sort sync insights"
-                  className="w-full border-[color:var(--panel-border)] bg-[color:var(--panel-hover)] text-[color:var(--panel-fg)]"
+                  className="w-full"
                 />
-                <ComboboxContent className="border border-[color:var(--panel-border)] bg-[color:var(--panel)] text-[color:var(--panel-fg)] shadow-lg ring-[color:var(--panel-border)]">
+                <ComboboxContent>
                   <ComboboxEmpty>No sort option found.</ComboboxEmpty>
                   <ComboboxList>
                     {(option) => (
-                      <ComboboxItem
-                        key={option.value}
-                        value={option}
-                        className="data-highlighted:bg-[color:var(--panel-hover)] data-highlighted:text-[color:var(--panel-fg)]"
-                      >
+                      <ComboboxItem key={option.value} value={option}>
                         {option.label}
                       </ComboboxItem>
                     )}

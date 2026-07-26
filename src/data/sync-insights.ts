@@ -1,4 +1,5 @@
 import { ADDITIONAL_SYNC_INSIGHTS } from "@/data/sync-insights-more";
+import type { SyncInsightIconName, SyncInsightPhoto } from "@/data/sync-insight-icons";
 import type { QueryFocus } from "@/lib/climate-affinity";
 import type { ClimateFact, ClimateHazard, ClimateRisk } from "@/lib/climate-profile";
 
@@ -22,12 +23,12 @@ export type SyncInsight = {
   summary: string;
   /** Long-form insight for the Sync side panel (kept under ~1000 words). */
   blurb: string;
-  image: {
-    src: string;
-    alt: string;
-    credit: string;
-    creditHref: string;
-  };
+  /**
+   * Accurate photo when available. When null, the UI renders `icon` instead.
+   */
+  image: SyncInsightPhoto | null;
+  /** Lucide icon used when no suitable photo exists (and as a category cue). */
+  icon: SyncInsightIconName;
   links: SyncInsightLink[];
   citations: SyncInsightCitation[];
   /** Optional tags used to match an active QueryFocus. */
@@ -55,11 +56,12 @@ Flood risk is not only a climate number. Local topography, river networks, coast
 
 When you activate this insight, the globe clusters cities by rainfall affinity. Each gold epicenter is a strong local exemplar of the wet-climate pattern; arcs connect peers whose precip fingerprints are close enough to justify a sync.`,
     image: {
-      src: "https://images.unsplash.com/photo-1428908728789-d2de25dbd4e2?auto=format&fit=crop&w=1200&q=80",
-      alt: "Rain falling on a city street",
-      credit: "Unsplash / Noah Silliman",
-      creditHref: "https://unsplash.com/photos/rain-falling-on-a-city-street-bs2Ba7t69mM",
+      src: "https://images.unsplash.com/photo-1761252987116-a3e993bd23e9?auto=format&fit=crop&w=1200&q=80",
+      alt: "Cars driving through a flooded street after heavy rain",
+      credit: "Unsplash / Aldward Castillo",
+      creditHref: "https://unsplash.com/photos/cars-driving-through-flooded-street-after-heavy-rain-DhM9aChufzU",
     },
+    icon: "CloudRain",
     links: [
       { label: "WMO flood guidance", href: "https://wmo.int/topics/flood" },
       { label: "IPCC WGII water chapter", href: "https://www.ipcc.ch/report/ar6/wg2/" },
@@ -94,11 +96,12 @@ Unlike a single dry month, drought-prone climates are structural: the rainfall b
 
 Syncing these cities does not claim identical governance or hydrology. It highlights places facing comparable climatic water budgets, so planners can compare what worked under similar rainfall constraints.`,
     image: {
-      src: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1200&q=80",
-      alt: "Dry cracked desert landscape",
-      credit: "Unsplash / Kenrick Mills",
-      creditHref: "https://unsplash.com/photos/brown-desert-under-blue-sky-during-daytime-1h2PgJP0dEw",
+      src: "https://images.unsplash.com/photo-1752419258297-f769e1a878ce?auto=format&fit=crop&w=1200&q=80",
+      alt: "Cracked earth showing the effects of drought",
+      credit: "Unsplash / GWANGJIN GO",
+      creditHref: "https://unsplash.com/photos/cracked-earth-shows-the-effects-of-drought-7f6KYooWCIo",
     },
+    icon: "Droplets",
     links: [
       { label: "UNCCD drought", href: "https://www.unccd.int/land-and-life/drought/overview" },
       { label: "NASA drought resources", href: "https://www.nasa.gov/earth/climate-change/" },
@@ -128,11 +131,12 @@ That rhythm shapes everything from agriculture calendars to flood preparedness a
 
 When monsoon clusters light up, compare not only totals but timing: early onset, delayed withdrawal, and wet-season extremes are where climate risk and adaptation planning meet.`,
     image: {
-      src: "https://images.unsplash.com/photo-1561553543-e8d3f6b7f5f1?auto=format&fit=crop&w=1200&q=80",
-      alt: "Monsoon clouds over a landscape",
-      credit: "Unsplash",
-      creditHref: "https://unsplash.com/",
+      src: "https://images.unsplash.com/photo-1765683011450-c2b8dae7b223?auto=format&fit=crop&w=1200&q=80",
+      alt: "Tuk-tuk driving through heavy monsoon rain on a city street",
+      credit: "Unsplash / Aprhille Salao",
+      creditHref: "https://unsplash.com/photos/tuk-tuk-driving-through-heavy-rain-on-city-street-U7nXKK7xavY",
     },
+    icon: "Umbrella",
     links: [
       { label: "IMD monsoon", href: "https://mausam.imd.gov.in/" },
       { label: "WCRP monsoon research", href: "https://www.wcrp-climate.org/" },
@@ -158,11 +162,12 @@ Urban heat islands amplify the climate signal. Two cities with similar monthly m
 
 Activate this insight to see epicenters of heat intensity and the peers that share a comparable thermal profile.`,
     image: {
-      src: "https://images.unsplash.com/photo-1504370806029-eccf690f8751?auto=format&fit=crop&w=1200&q=80",
-      alt: "Sun over a hot landscape",
-      credit: "Unsplash / Štefan Štefančík",
-      creditHref: "https://unsplash.com/photos/sun-near-the-clouds-UBhpOIHnazM",
+      src: "https://images.unsplash.com/photo-1751889188945-f15e42becd73?auto=format&fit=crop&w=1200&q=80",
+      alt: "Thermometer showing extreme heat",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/the-thermometer-shows-a-very-hot-temperature-qs5HR1dG7h4",
     },
+    icon: "ThermometerSun",
     links: [
       { label: "WHO heat & health", href: "https://www.who.int/news-room/fact-sheets/detail/climate-change-heat-and-health" },
       { label: "C40 heat resources", href: "https://www.c40.org/" },
@@ -186,11 +191,12 @@ Activate this insight to see epicenters of heat intensity and the peers that sha
 
 As winters warm unevenly, cold cities still matter as analogues for resilience: district heating, snow management, and building envelopes designed for deep cold. Syncing highlights peers confronting similar thermal floors even as extremes shift.`,
     image: {
-      src: "https://images.unsplash.com/photo-1483664852095-d6cc467e59ea?auto=format&fit=crop&w=1200&q=80",
-      alt: "Snowy city street in winter",
-      credit: "Unsplash / Adam Chang",
-      creditHref: "https://unsplash.com/photos/snow-covered-pathway-between-houses-i5ji2nYfYqk",
+      src: "https://images.unsplash.com/photo-1477601263568-180e2c6d046e?auto=format&fit=crop&w=1200&q=80",
+      alt: "Snow-covered city road in winter",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/road-covered-by-snow-near-vehicle-traveling-at-daytime-R5SrmZPoO40",
     },
+    icon: "Snowflake",
     links: [
       { label: "CDC extreme cold", href: "https://www.cdc.gov/disasters/winter/index.html" },
     ],
@@ -212,12 +218,8 @@ As winters warm unevenly, cold cities still matter as analogues for resilience: 
     blurb: `Seasonality sync highlights continental and higher-latitude climates with big temperature ranges across the year. Four-season cities often share infrastructure challenges: heating and cooling peaks, freeze-thaw cycles, and allergy or vector seasons that migrate with the calendar.
 
 Low-seasonality tropical peers rarely appear here. The insight is about amplitude—how hard the climate pulls between summer and winter—not about absolute heat or cold alone.`,
-    image: {
-      src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80",
-      alt: "Autumn trees with seasonal color",
-      credit: "Unsplash / Luca Bravo",
-      creditHref: "https://unsplash.com/",
-    },
+    image: null,
+    icon: "CalendarRange",
     links: [
       { label: "Köppen climate classification", href: "https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification" },
     ],
@@ -240,11 +242,12 @@ Low-seasonality tropical peers rarely appear here. The insight is about amplitud
 
 Peers often share coastal or monsoon-influenced settings. Adaptation overlaps include building codes, early warning, evacuation logistics, and surge-aware land use—even when the named hazard differs (hurricane, typhoon, cyclone).`,
     image: {
-      src: "https://images.unsplash.com/photo-1527482797697-8795b05a13fe?auto=format&fit=crop&w=1200&q=80",
-      alt: "Storm clouds over the ocean",
-      credit: "Unsplash / Johannes Plenio",
-      creditHref: "https://unsplash.com/photos/lightning-strike-at-night-LkJmschlRUQ",
+      src: "https://images.unsplash.com/photo-1677759662192-a2c6e9d067a2?auto=format&fit=crop&w=1200&q=80",
+      alt: "Lightning storm over a city at night",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/a-lightning-storm-over-a-city-at-night-6wkemuAGzMY",
     },
+    icon: "CloudLightning",
     links: [
       { label: "NOAA hurricanes", href: "https://www.noaa.gov/hurricane" },
       { label: "WMO tropical cyclones", href: "https://wmo.int/topics/tropical-cyclone" },
@@ -270,11 +273,12 @@ Climate Sync does not simulate fuel loads or ignition. It clusters the meteorolo
 
 Shared adaptation themes include defensible space, air-quality alerts during smoke events, and land-use buffers—lessons that travel between fire-weather peers.`,
     image: {
-      src: "https://images.unsplash.com/photo-1502301197179-65228ab57f78?auto=format&fit=crop&w=1200&q=80",
-      alt: "Wildfire smoke and flames on a hillside",
-      credit: "Unsplash / Marcus Kauffman",
-      creditHref: "https://unsplash.com/photos/forest-fire-during-daytime-viFrsNbYKQI",
+      src: "https://images.unsplash.com/photo-1615092296061-e2ccfeb2f3d6?auto=format&fit=crop&w=1200&q=80",
+      alt: "Wildfire burning across a dry hillside at dusk",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/wildfire-burning-across-hillside-at-dusk-kbTp7dBzHyY",
     },
+    icon: "Flame",
     links: [
       { label: "GFMC wildfire", href: "https://gfmc.online/" },
       { label: "NASA FIRMS", href: "https://firms.modaps.eosdis.nasa.gov/" },
@@ -298,11 +302,12 @@ Shared adaptation themes include defensible space, air-quality alerts during smo
 
 Clusters often include wet tropical and monsoon cities where debris flows and mudslides follow extreme rain. Syncing helps compare early-warning thresholds, slope stabilization, and land-use setbacks used under similar precip regimes.`,
     image: {
-      src: "https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1200&q=80",
-      alt: "Mountain slopes after heavy rain",
-      credit: "Unsplash",
-      creditHref: "https://unsplash.com/",
+      src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+      alt: "Steep mountain slopes vulnerable to landslide after heavy rain",
+      credit: "Unsplash / Kalen Emsley",
+      creditHref: "https://unsplash.com/photos/mountains-covered-with-snow-under-gray-sky-Bkci_8qcdvQ",
     },
+    icon: "Mountain",
     links: [
       { label: "USGS landslides", href: "https://www.usgs.gov/programs/landslide-hazards" },
     ],
@@ -326,12 +331,8 @@ Clusters often include wet tropical and monsoon cities where debris flows and mu
 Within a cluster, arcs favor nearby seismic cities. Distant quake-prone metros stay in separate epicenters. That mirrors how building codes, drill culture, and emergency logistics are regional even when the hazard name is global.
 
 Use this insight to compare seismic readiness among cities that face a similar tectonic setting.`,
-    image: {
-      src: "https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=1200&q=80",
-      alt: "Cracked ground texture",
-      credit: "Unsplash",
-      creditHref: "https://unsplash.com/",
-    },
+    image: null,
+    icon: "Activity",
     links: [
       { label: "USGS earthquakes", href: "https://earthquake.usgs.gov/" },
       { label: "GEM Foundation", href: "https://www.globalquakemodel.org/" },
@@ -355,11 +356,12 @@ Use this insight to compare seismic readiness among cities that face a similar t
 
 Regional clusters (Japan, Indonesia, Andes, Mexico) keep syncs local. Cities compare ash-ready infrastructure, tourism contingency, and lahar channel planning with peers under similar volcanic neighborhoods.`,
     image: {
-      src: "https://images.unsplash.com/photo-1506899797870-7740ebb6e5f3?auto=format&fit=crop&w=1200&q=80",
-      alt: "Volcano erupting with ash plume",
-      credit: "Unsplash / Michael & Diane Weidner",
-      creditHref: "https://unsplash.com/",
+      src: "https://images.unsplash.com/photo-1744968776905-d602155b4947?auto=format&fit=crop&w=1200&q=80",
+      alt: "Volcano erupting with smoke and ash from above",
+      credit: "Unsplash / USGS",
+      creditHref: "https://unsplash.com/photos/volcano-erupting-with-smoke-and-clouds-from-above-vmxG-RLh_gQ",
     },
+    icon: "Flame",
     links: [
       { label: "Smithsonian GVP", href: "https://volcano.si.edu/" },
       { label: "USGS volcanoes", href: "https://www.usgs.gov/programs/VHP" },
@@ -381,11 +383,12 @@ Regional clusters (Japan, Indonesia, Andes, Mexico) keep syncs local. Cities com
     summary: "Coastal cities with tsunami exposure overlays.",
     blurb: `Tsunami sync highlights coastal cities tagged for tsunami exposure—often where seismic or volcanic coasts meet dense settlement. Syncing is regional so Pacific and other basin peers compare warning chains, vertical evacuation, and coastal setbacks.`,
     image: {
-      src: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&w=1200&q=80",
-      alt: "Ocean waves along a coastline",
-      credit: "Unsplash / Christoffer Engström",
-      creditHref: "https://unsplash.com/",
+      src: "https://images.unsplash.com/photo-1779231926860-503334a33d51?auto=format&fit=crop&w=1200&q=80",
+      alt: "Waves crashing against coastal rocks",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/waves-crash-against-large-rocks-on-a-sunny-coastline-3aXVfxmnHww",
     },
+    icon: "Waves",
     links: [
       { label: "IOC UNESCO tsunami", href: "https://www.ioc.unesco.org/" },
       { label: "NOAA tsunami", href: "https://www.tsunami.noaa.gov/" },
@@ -407,11 +410,12 @@ Regional clusters (Japan, Indonesia, Andes, Mexico) keep syncs local. Cities com
     summary: "Cities exposed to dust- and sand-storm overlays.",
     blurb: `Dust-storm sync groups arid-belt cities where blowing dust and sandstorms degrade air quality and visibility. Many peers sit near deserts or dry plains. Shared responses include air-quality alerts, building filtration, and land restoration that reduces dust sources.`,
     image: {
-      src: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=1200&q=80",
-      alt: "Desert sand dunes",
-      credit: "Unsplash / Willian Justen de Vasconcellos",
-      creditHref: "https://unsplash.com/",
+      src: "https://images.unsplash.com/photo-1511514323702-88e7e52f5223?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dusty desert landscape",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/desert-with-wire-fence-sBXVsMsfoEc",
     },
+    icon: "Wind",
     links: [
       { label: "WMO sand & dust", href: "https://community.wmo.int/activity-areas/gaw/science/sand-and-dust-storms" },
     ],
@@ -432,11 +436,12 @@ Regional clusters (Japan, Indonesia, Andes, Mexico) keep syncs local. Cities com
     summary: "Coastal cities with storm-surge exposure overlays.",
     blurb: `Storm-surge sync focuses on coastal metros where surge flooding can compound rainfall and tide. Peers often share low-lying districts and tropical-cyclone or extratropical-storm seasons. Compare barriers, elevated infrastructure, and retreat strategies among surge-tagged coasts.`,
     image: {
-      src: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=1200&q=80",
-      alt: "Stormy sea against a shoreline",
+      src: "https://images.unsplash.com/photo-1774703299544-9b98d029fba5?auto=format&fit=crop&w=1200&q=80",
+      alt: "Severe storm lightning over a coastal city skyline",
       credit: "Unsplash",
-      creditHref: "https://unsplash.com/",
+      creditHref: "https://unsplash.com/photos/city-skyline-at-night-with-lightning-storm-E2290BfFU7Y",
     },
+    icon: "Ship",
     links: [
       { label: "NOAA storm surge", href: "https://www.nhc.noaa.gov/surge/" },
     ],
@@ -459,11 +464,12 @@ Regional clusters (Japan, Indonesia, Andes, Mexico) keep syncs local. Cities com
 
 Peers can compare soft defenses, sediment management, and managed retreat timelines.`,
     image: {
-      src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      alt: "Beach shoreline meeting the ocean",
-      credit: "Unsplash / Sean Oulashin",
-      creditHref: "https://unsplash.com/photos/seashore-KMn4VEeEPR8",
+      src: "https://images.unsplash.com/photo-1652117500909-c475212fe733?auto=format&fit=crop&w=1200&q=80",
+      alt: "Eroded rocky coastline and beach",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/a-beach-with-rocks-and-a-hill-63OjbN6uqbg",
     },
+    icon: "Waves",
     links: [
       { label: "NASA sea level", href: "https://sealevel.nasa.gov/" },
       { label: "IPCC ocean & cryosphere", href: "https://www.ipcc.ch/srocc/" },
@@ -485,11 +491,12 @@ Peers can compare soft defenses, sediment management, and managed retreat timeli
     summary: "Equatorial and tropical climate-zone cities.",
     blurb: `Tropical sync groups cities with warm year-round temperatures (high coldest-month means). Humidity, convective rainfall, and limited seasonality often co-occur. Adaptation priorities lean toward heat-humidity stress, vector control, and intense short-duration rains.`,
     image: {
-      src: "https://images.unsplash.com/photo-1539667468226-ef8f6c8b1e48?auto=format&fit=crop&w=1200&q=80",
-      alt: "Lush tropical vegetation",
+      src: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dense tropical forest canopy",
       credit: "Unsplash",
-      creditHref: "https://unsplash.com/",
+      creditHref: "https://unsplash.com/photos/green-leafed-trees-lObpcyG3LVQ",
     },
+    icon: "Palmtree",
     links: [
       { label: "Köppen tropical climates", href: "https://en.wikipedia.org/wiki/Tropical_climate" },
     ],
@@ -510,11 +517,12 @@ Peers can compare soft defenses, sediment management, and managed retreat timeli
     summary: "Desert and hyper-arid climate-zone cities.",
     blurb: `Arid sync highlights desert-climate cities with very low annual rainfall. Day–night swings, dust, and water scarcity define the lived climate. Peers share cooling strategies, water reuse, and shade-first urban design.`,
     image: {
-      src: "https://images.unsplash.com/photo-1451337512447-c3c6bee68543?auto=format&fit=crop&w=1200&q=80",
-      alt: "Desert dunes under clear sky",
-      credit: "Unsplash / Sergey Pesterev",
-      creditHref: "https://unsplash.com/",
+      src: "https://images.unsplash.com/photo-1641118593381-ded30a11d4e1?auto=format&fit=crop&w=1200&q=80",
+      alt: "Drought-stressed field under harsh sun",
+      credit: "Unsplash",
+      creditHref: "https://unsplash.com/photos/a-large-field-of-dead-plants-in-the-middle-of-the-day-mz278SNa2ek",
     },
+    icon: "Sun",
     links: [
       { label: "UNCCD", href: "https://www.unccd.int/" },
     ],
@@ -540,6 +548,7 @@ Peers can compare soft defenses, sediment management, and managed retreat timeli
       credit: "Unsplash / Willian Justen",
       creditHref: "https://unsplash.com/",
     },
+    icon: "Leaf",
     links: [
       { label: "Mediterranean climate", href: "https://en.wikipedia.org/wiki/Mediterranean_climate" },
     ],
@@ -565,6 +574,7 @@ Peers can compare soft defenses, sediment management, and managed retreat timeli
       credit: "Unsplash / David Marcu",
       creditHref: "https://unsplash.com/",
     },
+    icon: "Thermometer",
     links: [
       { label: "IPCC regional fact sheets", href: "https://www.ipcc.ch/report/ar6/wg1/" },
     ],
@@ -586,12 +596,8 @@ Peers can compare soft defenses, sediment management, and managed retreat timeli
     blurb: `Climate-analogue sync is the classic “cities like X” mode. The epicenter is the seed city. Peers are ranked by a blended score: continuous climate features (temperature, rainfall, seasonality) plus shared risk and zone tags.
 
 This is the broadest sync. Use it when you want holistic twins—useful for transferring urban forestry, energy demand, or tourism-season insights across cities whose entire climate fingerprints align.`,
-    image: {
-      src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80",
-      alt: "Tokyo cityscape",
-      credit: "Unsplash / Jezael Melgoza",
-      creditHref: "https://unsplash.com/photos/people-walking-on-street-near-buildings-7H77FWxgrOY",
-    },
+    image: null,
+    icon: "GitCompareArrows",
     links: [
       { label: "Climate analogues concept", href: "https://www.sciencedirect.com/topics/earth-and-planetary-sciences/climate-analogue" },
       { label: "Open-Meteo climate API", href: "https://open-meteo.com/en/docs/climate-api" },

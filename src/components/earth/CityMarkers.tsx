@@ -89,6 +89,21 @@ function CityMarker({
     [city.lat, city.lon, height],
   );
 
+  // Local +Z points radially outward so rings lie flat on the surface.
+  const quaternion = useMemo(() => {
+    const q = new THREE.Quaternion();
+    q.setFromUnitVectors(new THREE.Vector3(0, 0, 1), position.clone().normalize());
+    return q;
+  }, [position]);
+
+  const selectedRing =
+    tier === "major" || selected
+      ? ([0.04, 0.055, 32] as const)
+      : tier === "secondary"
+        ? ([0.022, 0.03, 24] as const)
+        : ([0.014, 0.02, 20] as const);
+  const matchRing = [radius * 1.55, radius * 2.05, 24] as const;
+
   const color = useMemo(() => {
     if (selected) return "#f2c14e";
     if (seed) return "#f2c14e";
@@ -116,6 +131,7 @@ function CityMarker({
     <group
       ref={group}
       position={position}
+      quaternion={quaternion}
       onClick={(event) => {
         event.stopPropagation();
         onSelect(city.id);
@@ -157,23 +173,15 @@ function CityMarker({
       </mesh>
 
       {selected || seed ? (
-        <mesh>
-          <ringGeometry
-            args={
-              tier === "major" || selected
-                ? [0.04, 0.055, 32]
-                : tier === "secondary"
-                  ? [0.022, 0.03, 24]
-                  : [0.014, 0.02, 20]
-            }
-          />
+        <mesh position={[0, 0, 0.001]}>
+          <ringGeometry args={[...selectedRing]} />
           <meshBasicMaterial color="#f2c14e" side={THREE.DoubleSide} transparent opacity={0.9} />
         </mesh>
       ) : null}
 
       {matched && !selected && !seed ? (
-        <mesh>
-          <ringGeometry args={[radius * 1.55, radius * 2.05, 24]} />
+        <mesh position={[0, 0, 0.001]}>
+          <ringGeometry args={[...matchRing]} />
           <meshBasicMaterial color="#7dd3c0" side={THREE.DoubleSide} transparent opacity={0.55} />
         </mesh>
       ) : null}

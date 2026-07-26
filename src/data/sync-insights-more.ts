@@ -1,7 +1,9 @@
 import type { SyncInsight } from "@/data/sync-insights";
+import type { SyncInsightIconName, SyncInsightPhoto } from "@/data/sync-insight-icons";
 
-type InsightDraft = Omit<SyncInsight, "links" | "citations" | "image"> & {
-  image?: SyncInsight["image"];
+type InsightDraft = Omit<SyncInsight, "links" | "citations" | "image" | "icon"> & {
+  image?: SyncInsightPhoto | null;
+  icon?: SyncInsightIconName;
   links?: SyncInsight["links"];
   citations?: SyncInsight["citations"];
 };
@@ -20,141 +22,72 @@ const OPEN_METEO = {
 
 const WMO = { label: "WMO topics", href: "https://wmo.int/topics" } as const;
 
-/** Curated Unsplash set used for extended catalog imagery. */
+/** Photos not used by core insights — each assigned at most once. */
 const PHOTOS = {
-  rain: {
-    src: "https://images.unsplash.com/photo-1519692933481-e162a57d5760?auto=format&fit=crop&w=1200&q=80",
-    alt: "Heavy rain over city lights",
-    credit: "Unsplash / Valentin Salja",
-    creditHref: "https://unsplash.com/photos/rain-falling-on-city-street-at-night-t7XLTA5W0UQ",
-  },
-  flood: {
-    src: "https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1200&q=80",
-    alt: "Flooded urban street",
-    credit: "Unsplash / Chris Gallagher",
-    creditHref: "https://unsplash.com/",
-  },
-  desert: {
-    src: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1200&q=80",
-    alt: "Arid desert landscape",
-    credit: "Unsplash / Kenrick Mills",
-    creditHref: "https://unsplash.com/photos/1h2PgJP0dEw",
-  },
-  heat: {
-    src: "https://images.unsplash.com/photo-1561470508-fd4df1bc3487?auto=format&fit=crop&w=1200&q=80",
-    alt: "Sun over a hot city skyline",
-    credit: "Unsplash / Jannik Bagge",
-    creditHref: "https://unsplash.com/",
-  },
-  cold: {
-    src: "https://images.unsplash.com/photo-1483664852095-d6cc68707026?auto=format&fit=crop&w=1200&q=80",
-    alt: "Snowy winter city street",
-    credit: "Unsplash / Adam Chang",
-    creditHref: "https://unsplash.com/",
-  },
-  storm: {
-    src: "https://images.unsplash.com/photo-1527482797697-8795b05a13fe?auto=format&fit=crop&w=1200&q=80",
-    alt: "Lightning storm over a city",
-    credit: "Unsplash / Brandon Morgan",
-    creditHref: "https://unsplash.com/",
-  },
-  cyclone: {
-    src: "https://images.unsplash.com/photo-1527482937786-6608f6ac6f7e?auto=format&fit=crop&w=1200&q=80",
-    alt: "Tropical storm clouds",
+  floodStreet: {
+    src: "https://images.unsplash.com/photo-1661868668264-35233e0e0dac?auto=format&fit=crop&w=1200&q=80",
+    alt: "People riding bicycles through a flooded city street",
     credit: "Unsplash",
-    creditHref: "https://unsplash.com/",
+    creditHref: "https://unsplash.com/photos/people-riding-bicycles-through-a-flooded-street-P7Z3HwNWPeQ",
   },
-  fire: {
-    src: "https://images.unsplash.com/photo-1502301197179-65228ab57f78?auto=format&fit=crop&w=1200&q=80",
-    alt: "Wildfire glow on a hillside",
-    credit: "Unsplash / Matt Palmer",
-    creditHref: "https://unsplash.com/",
+  floodHomes: {
+    src: "https://images.unsplash.com/photo-1741081038901-f258dd2f5a1c?auto=format&fit=crop&w=1200&q=80",
+    alt: "Floodwater surrounding homes with a person standing in the water",
+    credit: "Unsplash",
+    creditHref: "https://unsplash.com/photos/flooding-engulfs-homes-and-a-person-stands-in-the-water-jE_XQeC788s",
   },
   smoke: {
     src: "https://images.unsplash.com/photo-1600298881974-6be191ceeda1?auto=format&fit=crop&w=1200&q=80",
-    alt: "Smoke haze over a city",
+    alt: "Smoke haze over a landscape",
     credit: "Unsplash",
-    creditHref: "https://unsplash.com/",
-  },
-  coast: {
-    src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-    alt: "Ocean coastline",
-    credit: "Unsplash / Sean Oulashin",
-    creditHref: "https://unsplash.com/",
-  },
-  waves: {
-    src: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1200&q=80",
-    alt: "Large ocean waves",
-    credit: "Unsplash / Silas Baisch",
-    creditHref: "https://unsplash.com/",
-  },
-  mountain: {
-    src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-    alt: "Mountain landscape",
-    credit: "Unsplash / Kalen Emsley",
-    creditHref: "https://unsplash.com/",
-  },
-  glacier: {
-    src: "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?auto=format&fit=crop&w=1200&q=80",
-    alt: "Glacier and ice",
-    credit: "Unsplash / Benjamin Voros",
-    creditHref: "https://unsplash.com/",
-  },
-  jungle: {
-    src: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
-    alt: "Dense tropical forest",
-    credit: "Unsplash / David Clode",
-    creditHref: "https://unsplash.com/",
+    creditHref: "https://unsplash.com/photos/1600298881974-6be191ceeda1",
   },
   city: {
     src: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80",
     alt: "Dense city skyline",
     credit: "Unsplash / Pedro Lastra",
-    creditHref: "https://unsplash.com/",
-  },
-  dust: {
-    src: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1200&q=80",
-    alt: "Arid landscape under dusty light",
-    credit: "Unsplash / Kenrick Mills",
-    creditHref: "https://unsplash.com/photos/1h2PgJP0dEw",
-  },
-  volcano: {
-    src: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1200&q=80",
-    alt: "Volcanic mountain landscape",
-    credit: "Unsplash / Qingbao Meng",
-    creditHref: "https://unsplash.com/",
+    creditHref: "https://unsplash.com/photos/aerial-photography-of-cityscape-euycxJKB8BA",
   },
   earth: {
     src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
     alt: "Earth from space",
     credit: "Unsplash / NASA",
-    creditHref: "https://unsplash.com/",
+    creditHref: "https://unsplash.com/photos/photo-of-outer-space-yZygONrUBe8",
   },
   fog: {
     src: "https://images.unsplash.com/photo-1487621167305-5d248087c724?auto=format&fit=crop&w=1200&q=80",
-    alt: "Fog over a city",
+    alt: "Fog over a city skyline",
     credit: "Unsplash",
-    creditHref: "https://unsplash.com/",
+    creditHref: "https://unsplash.com/photos/1487621167305-5d248087c724",
   },
   wetland: {
     src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
     alt: "Misty wetland hills",
     credit: "Unsplash / Luca Bravo",
-    creditHref: "https://unsplash.com/",
+    creditHref: "https://unsplash.com/photos/foggy-mountain-summit-ESkKOwio0lA",
+  },
+  glacier: {
+    src: "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?auto=format&fit=crop&w=1200&q=80",
+    alt: "Glacier ice and snow",
+    credit: "Unsplash / Benjamin Voros",
+    creditHref: "https://unsplash.com/photos/aerial-photography-of-snow-covered-mountain-HJxFs7Xu5Ek",
   },
 } as const;
 
-function insight(
-  draft: InsightDraft,
-  photo: (typeof PHOTOS)[keyof typeof PHOTOS],
-): SyncInsight {
+type Visual =
+  | { photo: (typeof PHOTOS)[keyof typeof PHOTOS]; icon: SyncInsightIconName }
+  | { photo?: null; icon: SyncInsightIconName };
+
+function insight(draft: InsightDraft, visual: Visual): SyncInsight {
   return {
     ...draft,
     links: draft.links ?? [WMO, { label: "IPCC reports", href: "https://www.ipcc.ch/" }],
     citations: draft.citations ?? [IPCC, OPEN_METEO],
-    image: draft.image ?? photo,
+    image: draft.image ?? visual.photo ?? null,
+    icon: draft.icon ?? visual.icon,
   };
 }
+
 
 /**
  * Extended Sync Insight catalog (+50). Merged into SYNC_INSIGHTS at module load.
@@ -173,7 +106,7 @@ export const ADDITIONAL_SYNC_INSIGHTS: SyncInsight[] = [
 The climate fingerprint is wet-season intensity; the urban layer is what turns millimeters into street-level impact. Synced cities can compare permeable paving, detention basins, early warnings, and building codes under similar rainfall regimes.`,
       match: { risks: ["heavy_rainfall"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.flood,
+    { photo: PHOTOS.floodStreet, icon: "House" },
   ),
   insight(
     {
@@ -187,7 +120,7 @@ The climate fingerprint is wet-season intensity; the urban layer is what turns m
 Syncing these cities emphasizes hydrologic timing—not just annual averages. Early-warning lead times, upstream gauges, and debris-flow awareness travel well across analogues.`,
       match: { risks: ["heavy_rainfall", "landslide_risk"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.rain,
+    { icon: "Zap" },
   ),
   insight(
     {
@@ -201,7 +134,7 @@ Syncing these cities emphasizes hydrologic timing—not just annual averages. Ea
 Compare how peers stage temporary shelters, clear drains before onset, and manage post-season drought rebound.`,
       match: { risks: ["monsoon_pattern", "heavy_rainfall"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.rain,
+    { icon: "CloudRain" },
   ),
   insight(
     {
@@ -215,7 +148,7 @@ Compare how peers stage temporary shelters, clear drains before onset, and manag
 Adaptation themes include demand management, aquifer banking during wet months, and drought-tolerant urban landscaping.`,
       match: { risks: ["drought_stress"], focusKinds: ["precip"], precipPolarity: "dry" },
     },
-    PHOTOS.desert,
+    { icon: "Sun" },
   ),
   insight(
     {
@@ -229,7 +162,7 @@ Adaptation themes include demand management, aquifer banking during wet months, 
 Sync connects arid and semi-arid cities so utilities and planners can compare reuse, desalination where coastal, and allocation under similar climatic water budgets.`,
       match: { risks: ["drought_stress"], facts: ["arid", "semi_arid"], focusKinds: ["precip"], precipPolarity: "dry" },
     },
-    PHOTOS.desert,
+    { icon: "CircleGauge" },
   ),
   insight(
     {
@@ -243,7 +176,7 @@ Sync connects arid and semi-arid cities so utilities and planners can compare re
 The globe links places that share hydrologic abundance with thermal steadiness—useful for comparing drainage and public-health playbooks.`,
       match: { facts: ["tropical", "humid"], risks: ["heavy_rainfall"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.jungle,
+    { icon: "Palmtree" },
   ),
   insight(
     {
@@ -257,7 +190,7 @@ The globe links places that share hydrologic abundance with thermal steadiness�
 Use this sync to compare multi-hazard planning: joint rainfall–surge forecasts, elevated critical assets, and nature-based buffers.`,
       match: { risks: ["heavy_rainfall", "storm_risk"], hazards: ["storm_surge"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.flood,
+    { photo: PHOTOS.floodHomes, icon: "TriangleAlert" },
   ),
   insight(
     {
@@ -271,7 +204,7 @@ Use this sync to compare multi-hazard planning: joint rainfall–surge forecasts
 Synced cities can share slope monitoring, land-use setbacks, and early-warning thresholds calibrated to similar rainfall intensity.`,
       match: { risks: ["landslide_risk", "heavy_rainfall"] },
     },
-    PHOTOS.mountain,
+    { icon: "TriangleAlert" },
   ),
   insight(
     {
@@ -285,7 +218,7 @@ Synced cities can share slope monitoring, land-use setbacks, and early-warning t
 Compare forecast-informed operations, conjunctive groundwater use, and interannual drought buffers.`,
       match: { risks: ["monsoon_pattern", "drought_stress"], focusKinds: ["precip"] },
     },
-    PHOTOS.wetland,
+    { photo: PHOTOS.wetland, icon: "Droplets" },
   ),
   insight(
     {
@@ -299,7 +232,7 @@ Compare forecast-informed operations, conjunctive groundwater use, and interannu
 Adaptation leans on shade, ventilation, night-time cooling centers, and labor protections timed to wet-bulb risk—not only peak afternoon highs.`,
       match: { risks: ["extreme_heat"], facts: ["humid", "tropical"], focusKinds: ["heat"] },
     },
-    PHOTOS.heat,
+    { icon: "Droplets" },
   ),
   insight(
     {
@@ -313,7 +246,7 @@ Adaptation leans on shade, ventilation, night-time cooling centers, and labor pr
 Cool roofs, tree canopy, reflective pavements, and heat-health warning systems are the shared toolkit across synced peers.`,
       match: { risks: ["extreme_heat"], facts: ["warming_hotspot"], focusKinds: ["heat"] },
     },
-    PHOTOS.city,
+    { photo: PHOTOS.city, icon: "Building2" },
   ),
   insight(
     {
@@ -327,7 +260,7 @@ Cool roofs, tree canopy, reflective pavements, and heat-health warning systems a
 Sync these cities to compare overnight cooling strategies and building envelope standards under similar thermal baselines.`,
       match: { risks: ["extreme_heat"], focusKinds: ["heat"] },
     },
-    PHOTOS.heat,
+    { icon: "Moon" },
   ),
   insight(
     {
@@ -341,7 +274,7 @@ Sync these cities to compare overnight cooling strategies and building envelope 
 Shared lessons include weatherization, warming centers, and freeze-protection for water systems—especially as climate variability still delivers deep cold even in a warming world.`,
       match: { risks: ["extreme_cold"], focusKinds: ["cold"] },
     },
-    PHOTOS.cold,
+    { icon: "Snowflake" },
   ),
   insight(
     {
@@ -355,7 +288,7 @@ Shared lessons include weatherization, warming centers, and freeze-protection fo
 Compare pavement specs, leak detection, and winter maintenance budgets among cities with similar annual temperature amplitudes.`,
       match: { risks: ["high_seasonality", "extreme_cold"], focusKinds: ["seasonality"] },
     },
-    PHOTOS.cold,
+    { icon: "ArrowLeftRight" },
   ),
   insight(
     {
@@ -369,7 +302,7 @@ Compare pavement specs, leak detection, and winter maintenance budgets among cit
 Energy systems, building codes, and emergency stockpiles look different here than in oceanic climates.`,
       match: { facts: ["continental"], risks: ["high_seasonality"], focusKinds: ["seasonality"] },
     },
-    PHOTOS.earth,
+    { icon: "Orbit" },
   ),
   insight(
     {
@@ -383,7 +316,7 @@ Energy systems, building codes, and emergency stockpiles look different here tha
 Sync these cities to compare how mild baselines shape housing stock and when rare extremes still surprise.`,
       match: { facts: ["oceanic", "temperate"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.fog,
+    { photo: PHOTOS.fog, icon: "CloudFog" },
   ),
   insight(
     {
@@ -397,7 +330,7 @@ Sync these cities to compare how mild baselines shape housing stock and when rar
 Look for shared strategies in irrigation limits, outdoor labor rules, and vegetation that survives both heat and aridity.`,
       match: { risks: ["extreme_heat", "drought_stress"], focusKinds: ["heat"] },
     },
-    PHOTOS.desert,
+    { icon: "Gauge" },
   ),
   insight(
     {
@@ -411,7 +344,7 @@ Look for shared strategies in irrigation limits, outdoor labor rules, and vegeta
 Compare heat action plans, informal settlement outreach, and grid resilience under similar thermal stress.`,
       match: { facts: ["warming_hotspot"], risks: ["extreme_heat"], focusKinds: ["heat"] },
     },
-    PHOTOS.heat,
+    { icon: "Sparkles" },
   ),
   insight(
     {
@@ -425,7 +358,7 @@ Compare heat action plans, informal settlement outreach, and grid resilience und
 Share building codes, evacuation logistics, and post-storm power restoration among peers with similar storm-season hydrographs.`,
       match: { risks: ["storm_risk", "heavy_rainfall"], hazards: ["storm_surge"], focusKinds: ["hazard"] },
     },
-    PHOTOS.cyclone,
+    { icon: "Cloudy" },
   ),
   insight(
     {
@@ -439,7 +372,7 @@ Share building codes, evacuation logistics, and post-storm power restoration amo
 Peers can compare warning dissemination, hail-resistant roofs, and drainage sized for short-duration extremes.`,
       match: { risks: ["storm_risk"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.storm,
+    { icon: "CloudLightning" },
   ),
   insight(
     {
@@ -453,7 +386,7 @@ Peers can compare warning dissemination, hail-resistant roofs, and drainage size
 Pair with local wind climatologies—the global sync shows who shares the broad regime.`,
       match: { risks: ["storm_risk"] },
     },
-    PHOTOS.storm,
+    { icon: "Wind" },
   ),
   insight(
     {
@@ -467,7 +400,7 @@ Pair with local wind climatologies—the global sync shows who shares the broad 
 Pre-season drain clearance and temporary flood barriers are common adaptations worth comparing.`,
       match: { risks: ["monsoon_pattern", "storm_risk"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.cyclone,
+    { icon: "Umbrella" },
   ),
   insight(
     {
@@ -481,7 +414,7 @@ Pre-season drain clearance and temporary flood barriers are common adaptations w
 Sync to exchange surge mapping, critical-facility siting, and nature-based shoreline defenses.`,
       match: { risks: ["storm_risk"], hazards: ["storm_surge", "coastal_erosion"] },
     },
-    PHOTOS.waves,
+    { icon: "RadioTower" },
   ),
   insight(
     {
@@ -495,7 +428,7 @@ Sync to exchange surge mapping, critical-facility siting, and nature-based shore
 Synced cities compare fire bans, ember-resistant building details, and smoke-ready public health messaging.`,
       match: { risks: ["wildfire_risk"], focusKinds: ["hazard"] },
     },
-    PHOTOS.fire,
+    { icon: "Flame" },
   ),
   insight(
     {
@@ -509,7 +442,7 @@ Synced cities compare fire bans, ember-resistant building details, and smoke-rea
 Use this sync to compare clean-air shelters, school closure policies, and air-quality alert systems.`,
       match: { risks: ["wildfire_risk"] },
     },
-    PHOTOS.smoke,
+    { photo: PHOTOS.smoke, icon: "CloudFog" },
   ),
   insight(
     {
@@ -523,7 +456,7 @@ Use this sync to compare clean-air shelters, school closure policies, and air-qu
 Peers share prescribed-fire governance, defensible-space rules, and seasonal readiness calendars.`,
       match: { risks: ["wildfire_risk", "drought_stress"] },
     },
-    PHOTOS.fire,
+    { icon: "House" },
   ),
   insight(
     {
@@ -537,7 +470,7 @@ Peers share prescribed-fire governance, defensible-space rules, and seasonal rea
 Compare drainage of peatlands, haze diplomacy, and dry-spell fire bans among peers.`,
       match: { risks: ["wildfire_risk"], facts: ["humid"] },
     },
-    PHOTOS.smoke,
+    { icon: "Leaf" },
   ),
   insight(
     {
@@ -551,7 +484,7 @@ Compare drainage of peatlands, haze diplomacy, and dry-spell fire bans among pee
 Compare retrofit programs, early warning, and emergency shelter standards across synced cities.`,
       match: { hazards: ["earthquake"], focusKinds: ["hazard"] },
     },
-    PHOTOS.city,
+    { icon: "Building2" },
   ),
   insight(
     {
@@ -565,7 +498,7 @@ Compare retrofit programs, early warning, and emergency shelter standards across
 Ashfall cleanup, roof load standards, and respiratory guidance are recurring themes.`,
       match: { hazards: ["volcano"], focusKinds: ["hazard"] },
     },
-    PHOTOS.volcano,
+    { icon: "Mountain" },
   ),
   insight(
     {
@@ -579,7 +512,7 @@ Ashfall cleanup, roof load standards, and respiratory guidance are recurring the
 Pair with storm-surge planning—many coasts face both deep-ocean and meteorological water threats.`,
       match: { hazards: ["tsunami"], focusKinds: ["hazard"] },
     },
-    PHOTOS.waves,
+    { icon: "Ship" },
   ),
   insight(
     {
@@ -593,7 +526,7 @@ Pair with storm-surge planning—many coasts face both deep-ocean and meteorolog
 Integrated drills, shared EOCs, and cascading-failure planning matter more than single-hazard silos here.`,
       match: { hazards: ["earthquake", "volcano", "tsunami"] },
     },
-    PHOTOS.earth,
+    { icon: "ShieldAlert" },
   ),
   insight(
     {
@@ -607,7 +540,7 @@ Integrated drills, shared EOCs, and cascading-failure planning matter more than 
 Synced cities compare dust forecasting, school closure thresholds, and land restoration upwind.`,
       match: { hazards: ["dust_storm"], facts: ["arid", "semi_arid"], focusKinds: ["hazard"] },
     },
-    PHOTOS.dust,
+    { icon: "Sunrise" },
   ),
   insight(
     {
@@ -621,7 +554,7 @@ Synced cities compare dust forecasting, school closure thresholds, and land rest
 Compare managed retreat debates, elevated infrastructure, and living shorelines among peers.`,
       match: { hazards: ["storm_surge", "coastal_erosion"], focusKinds: ["hazard"] },
     },
-    PHOTOS.coast,
+    { icon: "MapPinned" },
   ),
   insight(
     {
@@ -635,7 +568,7 @@ Compare managed retreat debates, elevated infrastructure, and living shorelines 
 Sync to exchange polder logic, pump capacity planning, and sediment management lessons.`,
       match: { risks: ["heavy_rainfall"], hazards: ["storm_surge", "coastal_erosion"] },
     },
-    PHOTOS.wetland,
+    { icon: "Combine" },
   ),
   insight(
     {
@@ -649,7 +582,7 @@ Sync to exchange polder logic, pump capacity planning, and sediment management l
 Peers compare barrier wells, alternative supply, and land-use limits on coastal aquifers.`,
       match: { risks: ["drought_stress"], hazards: ["coastal_erosion", "storm_surge"] },
     },
-    PHOTOS.coast,
+    { icon: "Waves" },
   ),
   insight(
     {
@@ -663,7 +596,7 @@ Peers compare barrier wells, alternative supply, and land-use limits on coastal 
 Nature-based and gray defenses both appear in these conversations.`,
       match: { hazards: ["coastal_erosion"], focusKinds: ["hazard"] },
     },
-    PHOTOS.waves,
+    { icon: "Castle" },
   ),
   insight(
     {
@@ -677,7 +610,7 @@ Nature-based and gray defenses both appear in these conversations.`,
 Compare wharf elevation, backup power, and mutual-aid berthing agreements.`,
       match: { hazards: ["storm_surge"], risks: ["storm_risk"] },
     },
-    PHOTOS.waves,
+    { icon: "Anchor" },
   ),
   insight(
     {
@@ -691,7 +624,7 @@ Compare wharf elevation, backup power, and mutual-aid berthing agreements.`,
 Sync for desalination governance, tourist-season demand spikes, and shoreline defense at small scales.`,
       match: { hazards: ["storm_surge", "coastal_erosion"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.coast,
+    { icon: "Sailboat" },
   ),
   insight(
     {
@@ -705,7 +638,7 @@ Sync for desalination governance, tourist-season demand spikes, and shoreline de
 Use analogues to borrow urban form ideas that already work in dry air.`,
       match: { facts: ["arid"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.desert,
+    { icon: "ThermometerSun" },
   ),
   insight(
     {
@@ -719,7 +652,7 @@ Use analogues to borrow urban form ideas that already work in dry air.`,
 Compare drought indices, grazing and peri-urban agriculture rules, and early drought finance triggers.`,
       match: { facts: ["semi_arid"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.desert,
+    { icon: "LandPlot" },
   ),
   insight(
     {
@@ -733,7 +666,7 @@ Compare drought indices, grazing and peri-urban agriculture rules, and early dro
 Sync cities across basins that share this rhythm even when languages differ.`,
       match: { facts: ["mediterranean"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.coast,
+    { icon: "Compass" },
   ),
   insight(
     {
@@ -747,7 +680,7 @@ Sync cities across basins that share this rhythm even when languages differ.`,
 Analogues help compare hurricane or typhoon preparedness where storm flags also light up.`,
       match: { facts: ["subtropical", "humid"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.jungle,
+    { icon: "Trees" },
   ),
   insight(
     {
@@ -761,7 +694,7 @@ Analogues help compare hurricane or typhoon preparedness where storm flags also 
 Sync for transit heat comfort, informal settlement flood risk, and vector control under similar thermal baselines.`,
       match: { facts: ["tropical"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.city,
+    { icon: "Factory" },
   ),
   insight(
     {
@@ -775,7 +708,7 @@ Sync for transit heat comfort, informal settlement flood risk, and vector contro
 Compare how peers update design days and emergency thresholds as the distribution shifts.`,
       match: { facts: ["temperate"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.fog,
+    { icon: "CloudFog" },
   ),
   insight(
     {
@@ -789,7 +722,7 @@ Compare how peers update design days and emergency thresholds as the distributio
 Warming here is rapid; analogues help compare infrastructure on thawing ground and changing sea ice seasons.`,
       match: { facts: ["polar"], risks: ["extreme_cold"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.glacier,
+    { photo: PHOTOS.glacier, icon: "Snowflake" },
   ),
   insight(
     {
@@ -803,7 +736,7 @@ Warming here is rapid; analogues help compare infrastructure on thawing ground a
 Sync elevated cities to compare slope management and the unique energy mix of cool nights with tropical sun.`,
       match: { facts: ["temperate", "oceanic"], risks: ["landslide_risk"], focusKinds: ["climate_zone"] },
     },
-    PHOTOS.mountain,
+    { icon: "Earth" },
   ),
   insight(
     {
@@ -817,7 +750,7 @@ Sync elevated cities to compare slope management and the unique energy mix of co
 Activate a seed city, enable similarity, and read the arcs as a network of possible futures already lived somewhere else.`,
       match: { focusKinds: ["full_climate"] },
     },
-    PHOTOS.earth,
+    { photo: PHOTOS.earth, icon: "Sparkles" },
   ),
   insight(
     {
@@ -831,7 +764,7 @@ Activate a seed city, enable similarity, and read the arcs as a network of possi
 Look for peers with successful cooling centers, shaded mobility, and heat-health thresholds.`,
       match: { risks: ["extreme_heat"], focusKinds: ["heat"] },
     },
-    PHOTOS.heat,
+    { icon: "Binary" },
   ),
   insight(
     {
@@ -845,7 +778,7 @@ Look for peers with successful cooling centers, shaded mobility, and heat-health
 Exchange drainage standards and floodplain ordinances across the network.`,
       match: { risks: ["heavy_rainfall"], focusKinds: ["precip"], precipPolarity: "wet" },
     },
-    PHOTOS.flood,
+    { icon: "Network" },
   ),
   insight(
     {
@@ -859,7 +792,7 @@ Exchange drainage standards and floodplain ordinances across the network.`,
 Similarity arcs make that peer set visible on the globe.`,
       match: { risks: ["drought_stress"], focusKinds: ["precip"], precipPolarity: "dry" },
     },
-    PHOTOS.desert,
+    { icon: "Waypoints" },
   ),
   insight(
     {
@@ -873,7 +806,7 @@ Similarity arcs make that peer set visible on the globe.`,
 Use this mode to break regional silos in adaptation learning.`,
       match: { focusKinds: ["full_climate"] },
     },
-    PHOTOS.earth,
+    { icon: "Globe2" },
   ),
   insight(
     {
@@ -887,7 +820,7 @@ Use this mode to break regional silos in adaptation learning.`,
 Sync them to study integrated risk offices, compound-event scenarios, and budget processes that fund more than one hazard.`,
       match: { risks: ["extreme_heat", "heavy_rainfall"], focusKinds: ["full_climate"] },
     },
-    PHOTOS.storm,
+    { icon: "Layers" },
   ),
   insight(
     {
@@ -901,6 +834,6 @@ Sync them to study integrated risk offices, compound-event scenarios, and budget
 Pick a city on the globe, keep similarity on, and treat high-scoring matches as a shortlist for exchange visits and shared metrics.`,
       match: { focusKinds: ["full_climate"] },
     },
-    PHOTOS.city,
+    { icon: "Users" },
   ),
 ];
