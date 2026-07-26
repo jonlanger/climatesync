@@ -1,13 +1,19 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 
+import { latLonToVector3 } from "@/lib/geo";
 import { CameraFocus } from "./CameraFocus";
 import { CityLinks, type CityLink } from "./CityLinks";
 import { CityMarkers } from "./CityMarkers";
-import { TwoToneEarth } from "./TwoToneEarth";
+import { EARTH_RADIUS, TwoToneEarth } from "./TwoToneEarth";
+
+/** Match CameraFocus distance so the initial framing sits at the same orbit radius. */
+const CAMERA_DISTANCE = EARTH_RADIUS * 2.7825;
+/** Eastern China — densest concentration of ranked cities in the dataset. */
+const DEFAULT_VIEW = { lat: 32.5, lon: 115 };
 
 type EarthCanvasProps = {
   selectedId: string | null;
@@ -82,10 +88,15 @@ export function EarthCanvas({
   filteredIds = null,
   onHoverCity,
 }: EarthCanvasProps) {
+  const cameraPosition = useMemo(() => {
+    const pos = latLonToVector3(DEFAULT_VIEW.lat, DEFAULT_VIEW.lon, CAMERA_DISTANCE);
+    return [pos.x, pos.y, pos.z] as [number, number, number];
+  }, []);
+
   return (
     <Canvas
       className="h-full w-full touch-none"
-      camera={{ position: [0, 0.42, 4.41], fov: 42, near: 0.1, far: 200 }}
+      camera={{ position: cameraPosition, fov: 42, near: 0.1, far: 200 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     >

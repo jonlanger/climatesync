@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe2, Info, Layers, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { BookOpen, Globe2, Info, Layers, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 import {
   Sidebar,
@@ -21,6 +21,7 @@ import {
 const NAV_ITEMS = [
   { title: "Home", href: "/", icon: Globe2 },
   { title: "Sync Insights", href: "/insights", icon: Layers },
+  { title: "How to Use", href: "/how-to-use", icon: BookOpen },
   { title: "About", href: "/about", icon: Info },
 ] as const;
 

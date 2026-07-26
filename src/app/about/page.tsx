@@ -95,9 +95,9 @@ export default function AboutPage() {
             <p>
               Home is the interactive Earth: search or browse cities, run climate queries,
               and inspect city briefs. Sync Insights collects every theme as cards with
-              full-detail pages. About—this page—is the short orientation. Use the sidebar
-              (collapsed to icons by default; press ⌘B / Ctrl+B to expand) to move between
-              them.
+              full-detail pages. How to Use covers controls and feature tips. About—this
+              page—is the short orientation. Use the sidebar (collapsed to icons by
+              default; press ⌘B / Ctrl+B to expand) to move between them.
             </p>
           </section>
         </div>
